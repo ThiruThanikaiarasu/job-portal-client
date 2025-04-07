@@ -1,6 +1,12 @@
-const App = () => {
+import { BrowserRouter as Router } from "react-router-dom"
+import AppRoutes from "./routes/AppRoutes"
+
+const App = () => {    
+
     return (
-        <div className="text-xl">App</div>
+        <Router>
+            <AppRoutes />
+        </Router>
     )
 }
 
