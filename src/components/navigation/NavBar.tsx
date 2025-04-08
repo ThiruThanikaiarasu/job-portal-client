@@ -5,9 +5,11 @@ import ActionButton from '../ui/ActionButton'
 import MobileMenu from './MobileMenu'
 import HamburgerMenu from '../../svg/HamburgerMenu/HamburgerMenu'
 import CloseMenu from '../../svg/CloseMenu.tsx/CloseMenu'
+import JobPostModal from '../JobPostModal/JobPostModal'
 
 const NavBar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [showModal, setShowModal] = useState(false)
     
     const navLinks = [
         { id: 1, title: 'Home', path: '/' },
@@ -18,8 +20,13 @@ const NavBar = () => {
     ]
 
     const openCreateJobModal = () => {
-
+        setShowModal(true)
     }
+
+    
+      
+
+
 
     return (
         <>
@@ -57,6 +64,8 @@ const NavBar = () => {
             </nav>
     
             <MobileMenu navLinks={navLinks} isOpen={mobileMenuOpen} />
+
+            <JobPostModal showModal={showModal} setShowModal={setShowModal}/>
         </>
     )
 }
