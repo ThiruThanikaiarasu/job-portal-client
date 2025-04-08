@@ -1,4 +1,9 @@
 import { useForm } from 'react-hook-form'
+import authService from '../../services/authService'
+import { AxiosError } from 'axios'
+import { toast } from 'sonner'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 type LoginFormData = {
     email: string
@@ -7,14 +12,48 @@ type LoginFormData = {
 
 const LoginPage = () => {
 
+    const navigate = useNavigate()
+
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>()
 
     const onSubmit = (data: LoginFormData) => {
-        console.log('Login data:', data)
+        setIsSubmitting(true)
+        authService.login(data)
+            .then((response) => {
+                console.log(response)
+                if (response.status === 200) {
+                    location.href = '/'
+                }
+            })
+            .catch((error: AxiosError<any>) => {
+                console.error(error)
+            
+                const status = error.response?.status
+                const message = error.response?.data?.message ?? 'An error occurred'
+                const errorCode = error.response?.data?.error 
+            
+                if (status === 401 && errorCode == 'invalid_email') {
+                    toast.error('Invalid Email, try to create account')
+                } else if (status === 401 && errorCode == 'invalid_password') {
+                    toast.error('Incorrect password')
+                } else if (status === 500) {
+                    toast.error('Server error, please try again later')
+                } else if (status) {
+                    toast.error(`Error ${status}: ${message}`)
+                } else if (error.request) {
+                    toast.error('Network error. Please check your connection and try again.')
+                } else {
+                    toast.error('Unexpected error occurred. Please try again later.')
+                }
+            })
+            .finally(() => {
+                setIsSubmitting(false)
+            })
     }
 
     const toggleForm = () => {
-        location.href = '/signup'
+        navigate('/signup')
     }
 
     return (
@@ -70,8 +109,9 @@ const LoginPage = () => {
                         <button
                             type="submit"
                             className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            disabled={isSubmitting}
                         >
-                            Login
+                            {isSubmitting ? 'Logging in...' : 'Log in'}
                         </button>
                     </div>
                 </form>

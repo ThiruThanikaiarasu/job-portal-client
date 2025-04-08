@@ -1,4 +1,9 @@
 import { useForm } from "react-hook-form"
+import authService from "../../services/authService"
+import { AxiosError } from "axios"
+import { toast } from "sonner"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 type SignupFormData = {
     username: string
@@ -8,16 +13,47 @@ type SignupFormData = {
 }
 
 const SignupPage = () => {
+
+    const navigate = useNavigate()
+
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const { register, handleSubmit, watch, formState: { errors } } = useForm<SignupFormData>()
     
     const onSubmit = (data: SignupFormData) => {
-        console.log('Signup data:', data)
+        setIsSubmitting(true)
+        authService.signup(data)
+            .then((response) => {
+                if (response.status === 201) {
+                    location.href = '/'
+                }
+            })
+            .catch((error: AxiosError<any>) => {
+                console.error(error)
+            
+                const status = error.response?.status
+                const message = error.response?.data?.message ?? 'An error occurred'
+            
+                if (status === 409) {
+                    toast.error('User already exists. Login to continue')
+                } else if (status === 500) {
+                    toast.error('Server error, please try again later')
+                } else if (status) {
+                    toast.error(`Error ${status}: ${message}`)
+                } else if (error.request) {
+                    toast.error('Network error. Please check your connection and try again.')
+                } else {
+                    toast.error('Unexpected error occurred. Please try again later.')
+                }
+            })
+            .finally(() => {
+                setIsSubmitting(false)
+            })
     }
 
     const password = watch('password')
 
     const toggleForm = () => {
-        location.href = '/login'
+        navigate('/login')
     }
 
     return (
@@ -110,8 +146,9 @@ const SignupPage = () => {
                         <button
                             type="submit"
                             className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            disabled={isSubmitting}
                         >
-                            Sign Up
+                            {isSubmitting ? 'Signing up...' : 'Sign up'}
                         </button>
                     </div>
                 </form>
