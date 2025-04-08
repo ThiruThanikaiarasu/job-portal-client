@@ -1,6 +1,11 @@
+import JobBoard from "../../components/JobBoard/JobBoard"
+import { jobData } from "../../constants/jobData"
+
 const HomePage = () => {
     return (
-        <div>HomePage</div>
+        <main>
+            <JobBoard jobs={jobData} />
+        </main>
     )
 }
 

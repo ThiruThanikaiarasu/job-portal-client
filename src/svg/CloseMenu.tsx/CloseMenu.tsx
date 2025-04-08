@@ -1,13 +1,11 @@
-interface CloseMenuProps {
-    width?: string, 
-    height?: string
-}
+import { SVGProps } from "../../types/svg"
 
-const CloseMenu: React.FC<CloseMenuProps> = ({ width = '40', height = '40' }) => {
+const CloseMenu: React.FC<SVGProps> = ({ width = '40', height = '40', className = '' }) => {
     return (
         <svg 
             width={width}
             height={height}
+            className={className}
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor" 
