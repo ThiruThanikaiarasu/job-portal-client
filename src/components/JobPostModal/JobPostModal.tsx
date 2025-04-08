@@ -3,12 +3,13 @@ import { useForm } from "react-hook-form"
 import { JobFormData, jobTypes, locations } from "../../types/jobForm"
 
 interface JobPostModalProps {
-    showModal: boolean,
-    setShowModal: (value: boolean) => void,
+    showModal: boolean
+    setShowModal: (value: boolean) => void
+    editData?: JobFormData | null
 }
 
 
-const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal }) => {
+const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal, editData = null }) => {
     if(!showModal) return null 
     const {
         register,
@@ -30,19 +31,23 @@ const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal }) 
     })
 
     useEffect(() => {
-        const storedData = localStorage.getItem('yourKey')
-        console.log('first', storedData)
-
-        if (storedData) {
-            try {
-            const parsed = JSON.parse(storedData)
-            reset(parsed)
-            console.log('parsed:', parsed)
-            } catch (e) {
-            console.error('Failed to parse JSON:', e)
-            }
+        if (editData) {
+            reset(editData) 
         } else {
-            console.log('No data in localStorage')
+            const storedData = localStorage.getItem('yourKey')
+            console.log('first', storedData)
+
+            if (storedData) {
+                try {
+                const parsed = JSON.parse(storedData)
+                reset(parsed)
+                console.log('parsed:', parsed)
+                } catch (e) {
+                console.error('Failed to parse JSON:', e)
+                }
+            } else {
+                console.log('No data in localStorage')
+            }
         }
     }, [])
 
@@ -86,7 +91,7 @@ const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal }) 
                                 <div className="sm:flex sm:items-start">
                                     <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                                         <h3 className="text-xl leading-6 font-medium text-gray-900 mb-6 text-center" id="modal-headline">
-                                            Create Job Opening
+                                            {editData ? 'Edit Job Posting' : 'Create Job Opening'}
                                         </h3>
                                         
                                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
