@@ -23,12 +23,10 @@ const LoginPage = () => {
             .then((response) => {
                 console.log(response)
                 if (response.status === 200) {
-                    location.href = '/'
+                    navigate('/')
                 }
             })
-            .catch((error: AxiosError<any>) => {
-                console.error(error)
-            
+            .catch((error: AxiosError<any>) => {            
                 const status = error.response?.status
                 const message = error.response?.data?.message ?? 'An error occurred'
                 const errorCode = error.response?.data?.error 

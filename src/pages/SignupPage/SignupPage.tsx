@@ -24,12 +24,10 @@ const SignupPage = () => {
         authService.signup(data)
             .then((response) => {
                 if (response.status === 201) {
-                    location.href = '/'
+                    navigate('/')
                 }
             })
             .catch((error: AxiosError<any>) => {
-                console.error(error)
-            
                 const status = error.response?.status
                 const message = error.response?.data?.message ?? 'An error occurred'
             

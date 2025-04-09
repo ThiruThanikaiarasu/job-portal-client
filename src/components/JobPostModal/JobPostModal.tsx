@@ -1,6 +1,10 @@
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { JobFormData, jobTypes, locations } from "../../types/jobForm"
+import jobService from "../../services/jobService"
+import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
+import { AxiosError } from "axios"
 
 interface JobPostModalProps {
     showModal: boolean
@@ -11,6 +15,9 @@ interface JobPostModalProps {
 
 const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal, editData = null }) => {
     if(!showModal) return null 
+
+    const navigate = useNavigate()
+
     const {
         register,
         handleSubmit,
@@ -66,8 +73,29 @@ const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal, ed
     const onSubmit = (data: JobFormData) => {
         console.log('Job published:', data)
         localStorage.removeItem('jobDraft')
-        alert('Job published successfully!')
-        closeModal()
+        jobService.createJob(data)
+            .then((response) => {
+                if(response.status == 200) {
+                    navigate('/')
+                }
+            })
+            .catch((error: AxiosError<any>) => {            
+                const status = error.response?.status
+                const message = error.response?.data?.message ?? 'An error occurred'
+            
+                if (status === 409) {
+                    toast.error('Opening already exist, create new one')
+                } else if (status === 500) {
+                    toast.error('Server error, please try again later')
+                } else if (status) {
+                    toast.error(`Error ${status}: ${message}`)
+                } else if (error.request) {
+                    toast.error('Network error. Please check your connection and try again.')
+                } else {
+                    toast.error('Unexpected error occurred. Please try again later.')
+                }
+            })
+        
     }
 
     return (
