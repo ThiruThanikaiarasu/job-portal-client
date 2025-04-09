@@ -122,6 +122,27 @@ const JobPostModal = () => {
                             )
                         )
                         closeModal()
+                        toast.success('Job edited Successfully')
+                    }
+                })
+                .catch((error) => {
+                    const status = error.response?.status
+                    const message = error.response?.data?.message ?? 'An error occurred'
+                
+                    if (status === 401) {
+                        toast.error(message)
+                    } else if (status === 403) {
+                        toast.error(message)
+                    } else if (status === 404) {
+                        toast.error(message)
+                    } else if (status === 500) {
+                        toast.error('Server error, please try again later')
+                    } else if (status) {
+                        toast.error(`Error ${status}: ${message}`)
+                    } else if (error.request) {
+                        toast.error('Network error. Please check your connection and try again.')
+                    } else {
+                        toast.error('Unexpected error occurred. Please try again later.')
                     }
                 })
                 return 
@@ -130,8 +151,13 @@ const JobPostModal = () => {
         localStorage.removeItem('jobDraft')
         jobService.createJob(data)
             .then((response) => {
-                if(response.status == 200) {
-                    navigate('/')
+                console.log(response)
+                if(response.status == 201) {
+                    const newJob = response.data.data 
+
+                    setJobsData(prevJobs => [newJob, ...prevJobs])
+                    closeModal()
+                    toast.success('Job created Successfully')
                 }
             })
             .catch((error: AxiosError<any>) => {            

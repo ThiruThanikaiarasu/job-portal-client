@@ -3,6 +3,7 @@ import JobCard from '../JobCard/JobCard'
 import jobService from '../../services/jobService'
 import useAppDataContext from '../../hooks/useAppDataContext'
 import LoadingComponent from '../LoadingComponent/LoadingComponent'
+import { toast } from 'sonner'
 
 const JobBoard: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -16,7 +17,18 @@ const JobBoard: React.FC = () => {
                 setJobsData(response.data.data)
             })
             .catch((error) => {
-                console.log(error)
+                const status = error.response?.status
+                    const message = error.response?.data?.message ?? 'An error occurred'
+                
+                    if (status === 500) {
+                        toast.error('Server error, please try again later')
+                    } else if (status) {
+                        toast.error(`Error ${status}: ${message}`)
+                    } else if (error.request) {
+                        toast.error('Network error. Please check your connection and try again.')
+                    } else {
+                        toast.error('Unexpected error occurred. Please try again later.')
+                    }
             })
             .finally(() => {
                 setIsLoading(false)
