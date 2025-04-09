@@ -1,11 +1,13 @@
 export interface Job {
-    id: string;
-    title: string;
-    company: string;
-    logo: string;
-    timePosted: string;
-    experience: string;
-    locationType: string;
-    salary: string;
-    description: string[];
+    _id: string;
+    title: string
+    companyName: string
+    location: string
+    jobType: string
+    salaryMin: string
+    salaryMax: string
+    applicationDeadline: Date
+    description: string
+    createdAt?: Date
+    updatedAt?: Date
   }

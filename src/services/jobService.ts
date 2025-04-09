@@ -22,6 +22,11 @@ const jobService = {
         const response = await axiosInstance.delete<JobResponse>(`/jobs/${jobId}`)
         return response
     },
+
+    getAllJobs: async () => {
+        const response = await axiosInstance.get('/jobs')
+        return response
+    }
 }
 
 export default jobService

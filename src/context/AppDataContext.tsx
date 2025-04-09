@@ -1,4 +1,5 @@
 import { createContext, useState, ReactNode, useEffect } from "react"
+import { Job } from "../types/job"
 
 type UserDataType = {
     email: string
@@ -10,6 +11,8 @@ type AppDataContextType = {
     setUserData: React.Dispatch<React.SetStateAction<UserDataType[]>>
     isUserLoggedIn: boolean
     setIsUserLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+    jobsData: Job[]
+    setJobsData: React.Dispatch<React.SetStateAction<Job[]>>
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined)
@@ -21,6 +24,7 @@ type AppDataContextProviderProps = {
 const AppDataContextProvider = ({ children }: AppDataContextProviderProps) => {
     const [userData, setUserData] = useState<UserDataType[]>([])
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
+    const [jobsData, setJobsData] = useState<Job[]>([])
 
     useEffect(() => {
         const storedUserData = localStorage.getItem('userData')
@@ -47,7 +51,9 @@ const AppDataContextProvider = ({ children }: AppDataContextProviderProps) => {
                 userData, 
                 setUserData,
                 isUserLoggedIn,
-                setIsUserLoggedIn 
+                setIsUserLoggedIn,
+                jobsData,
+                setJobsData 
             }}
         >
             {children}
