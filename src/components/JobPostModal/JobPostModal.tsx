@@ -1,48 +1,55 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { JobFormData, jobTypes, locations } from "../../types/jobForm"
+import { jobTypes, locations } from "../../types/jobForm"
 import jobService from "../../services/jobService"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { AxiosError } from "axios"
+import useAppDataContext from "../../hooks/useAppDataContext"
+import { Job } from "../../types/job"
 
-interface JobPostModalProps {
-    showModal: boolean
-    setShowModal: (value: boolean) => void
-    editData?: JobFormData | null
-}
+const JobPostModal = () => {
 
-
-const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal, editData = null }) => {
+    const { showModal, setShowModal, jobBeingEdited, setJobsData } = useAppDataContext()
     if(!showModal) return null 
 
     const navigate = useNavigate()
+    const [originalJobData, setOriginalJobData] = useState<Job | null>(null)
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
-        getValues
-    } = useForm<JobFormData>({
+        getValues,
+        watch
+    } = useForm<Job>({
         defaultValues: {
-            jobTitle: '',
+            title: '',
             companyName: '',
             location: '',
             jobType: '',
             salaryMin: '',
             salaryMax: '',
             applicationDeadline: '',
-            jobDescription: ''
+            description: ''
         }
     })
+    
+    const formValues = watch()
 
     useEffect(() => {
-        if (editData) {
-            reset(editData) 
-        } else {
+        if (jobBeingEdited) {
+            const formattedJobData = {
+              ...jobBeingEdited,
+              applicationDeadline: new Date(jobBeingEdited.applicationDeadline).toISOString().split("T")[0]
+            }
+          
+            reset(formattedJobData)
+            setOriginalJobData(jobBeingEdited)
+          }
+           else {
             const storedData = localStorage.getItem('yourKey')
-            console.log('first', storedData)
 
             if (storedData) {
                 try {
@@ -61,17 +68,65 @@ const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal, ed
     const closeModal = () => {
         setShowModal(false)
         reset()
+        setOriginalJobData(null)
     }
 
-    const onSaveDraft = (data: JobFormData) => {
+    const onSaveDraft = (data: Job) => {
         console.log('Draft saved:', data)
         localStorage.setItem('jobDraft', JSON.stringify(data))
         alert('Draft saved successfully!')
         closeModal()
     }
 
-    const onSubmit = (data: JobFormData) => {
-        console.log('Job published:', data)
+    const normalizeDate = (date: string | Date): string => {
+        return new Date(date).toISOString().split('T')[0]
+    }
+    
+    const getChangedFields = (current: Job, original: Job | null): Partial<Job> => {
+        if (!original) return current
+    
+        const changes: Partial<Job> = {}
+    
+        if (current.title !== original.title) changes.title = current.title
+        if (current.companyName !== original.companyName) changes.companyName = current.companyName
+        if (current.location !== original.location) changes.location = current.location
+        if (current.jobType !== original.jobType) changes.jobType = current.jobType
+        if (current.salaryMin !== original.salaryMin) changes.salaryMin = current.salaryMin
+        if (current.salaryMax !== original.salaryMax) changes.salaryMax = current.salaryMax
+        if (normalizeDate(current.applicationDeadline) !== normalizeDate(original.applicationDeadline)) {
+            changes.applicationDeadline = current.applicationDeadline
+        }
+        if (current.description !== original.description) changes.description = current.description
+    
+        return changes
+    }
+    
+
+    const onSubmit = (data: Job) => {
+        if (jobBeingEdited) {
+            const changes = getChangedFields(data, originalJobData)
+    
+            if (Object.keys(changes).length === 0) {
+                toast.error('No changes detected. Please make changes before submitting.')
+                return
+            }
+    
+            jobService.updateJob(data._id, changes)
+                .then((response) => {
+                    if(response.status == 200) {
+                        setJobsData((prevJobs) =>
+                            prevJobs.map((job) =>
+                                job._id === data._id
+                                    ? { ...job, ...changes }
+                                    : job
+                            )
+                        )
+                        closeModal()
+                    }
+                })
+                return 
+        }
+        
         localStorage.removeItem('jobDraft')
         jobService.createJob(data)
             .then((response) => {
@@ -119,24 +174,24 @@ const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal, ed
                                 <div className="sm:flex sm:items-start">
                                     <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                                         <h3 className="text-xl leading-6 font-medium text-gray-900 mb-6 text-center" id="modal-headline">
-                                            {editData ? 'Edit Job Posting' : 'Create Job Opening'}
+                                            {jobBeingEdited ? 'Edit Job Posting' : 'Create Job Opening'}
                                         </h3>
                                         
                                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
-                                                    <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700">
+                                                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                                                         Job Title
                                                     </label>
                                                     <input
                                                         type="text"
-                                                        id="jobTitle"
+                                                        id="title"
                                                         placeholder="Eg: Software Developer"
-                                                        {...register('jobTitle', { required: 'Job title is required' })}
-                                                        className={`mt-1 block w-full border ${errors.jobTitle ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm`}
+                                                        {...register('title', { required: 'Job title is required' })}
+                                                        className={`mt-1 block w-full border ${errors.title ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm`}
                                                     />
-                                                    {errors.jobTitle && (
-                                                        <p className="mt-1 text-sm text-red-600">{errors.jobTitle.message}</p>
+                                                    {errors.title && (
+                                                        <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
                                                     )}
                                                 </div>
 
@@ -271,21 +326,21 @@ const JobPostModal: React.FC<JobPostModalProps> = ({ showModal, setShowModal, ed
                                                 </div>
 
                                                 <div className="col-span-1 md:col-span-2">
-                                                    <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700">
+                                                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                                                         Job Description
                                                     </label>
                                                     <textarea
-                                                        id="jobDescription"
+                                                        id="description"
                                                         rows={5}
                                                         placeholder="Please share a description to let the candidate know more about the job role"
-                                                        {...register('jobDescription', { 
+                                                        {...register('description', { 
                                                             required: 'Job description is required',
                                                             minLength: { value: 50, message: 'Description should be at least 50 characters' }
                                                         })}
-                                                        className={`mt-1 block w-full border ${errors.jobDescription ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm`}
+                                                        className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm`}
                                                     />
-                                                    {errors.jobDescription && (
-                                                        <p className="mt-1 text-sm text-red-600">{errors.jobDescription.message}</p>
+                                                    {errors.description && (
+                                                        <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
                                                     )}
                                                 </div>
                                             </div>

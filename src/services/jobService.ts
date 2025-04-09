@@ -1,4 +1,4 @@
-import { JobFormData } from '../types/jobForm'
+import { Job } from '../types/job'
 import axiosInstance from '../utils/axiosInstance'
 
 interface JobResponse {
@@ -8,13 +8,14 @@ interface JobResponse {
 }
 
 const jobService = {
-    createJob: async (jobData: JobFormData) => {
+    createJob: async (jobData: Job) => {
         const response = await axiosInstance.post<JobResponse>('/jobs', jobData)
         return response
     },
 
-    updateJob: async (jobId: string, updatedData: Partial<JobFormData>) => {
-        const response = await axiosInstance.put<JobResponse>(`/jobs/${jobId}`, updatedData)
+    updateJob: async (jobId: string, updatedData: Partial<Job>) => {
+        console.log(updatedData)
+        const response = await axiosInstance.put(`/jobs/${jobId}`, updatedData)
         return response
     },
 

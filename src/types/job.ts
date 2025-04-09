@@ -6,8 +6,9 @@ export interface Job {
     jobType: string
     salaryMin: string
     salaryMax: string
-    applicationDeadline: Date
+    applicationDeadline: Date | string
     description: string
     createdAt?: Date
     updatedAt?: Date
+    __v?: number
   }

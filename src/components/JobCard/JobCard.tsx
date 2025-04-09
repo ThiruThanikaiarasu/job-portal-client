@@ -8,6 +8,7 @@ import Dollar from '../../svg/Dollar/Dollar'
 import ThreeDot from '../../svg/ThreeDot/ThreeDot'
 
 import logo from '../../../public/amazon-logo.png'
+import useAppDataContext from '../../hooks/useAppDataContext'
 
 interface JobCardProps {
   job: Job
@@ -16,9 +17,16 @@ interface JobCardProps {
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const { setJobBeingEdited, setShowModal } = useAppDataContext()
     const timeAgo = job.createdAt
         ? formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })
         : 'Unknown'
+
+    const handleEdit = () => {
+        setIsMenuOpen(false)
+        setJobBeingEdited(job)
+        setShowModal(true)
+    }
 
     return (
         <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
@@ -46,10 +54,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
                         <div className="absolute right-0 top-8 bg-white border rounded-md shadow-lg z-10 w-32 text-sm">
                         <button
                             className="w-full px-4 py-2 hover:bg-gray-100 text-left"
-                            onClick={() => {
-                            setIsMenuOpen(false)
-                            alert('Edit clicked')
-                            }}
+                            onClick={handleEdit}
                         >
                             Edit
                         </button>

@@ -13,6 +13,10 @@ type AppDataContextType = {
     setIsUserLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
     jobsData: Job[]
     setJobsData: React.Dispatch<React.SetStateAction<Job[]>>
+    showModal: boolean
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>
+    jobBeingEdited: Job | null
+    setJobBeingEdited: React.Dispatch<React.SetStateAction<Job | null>>
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined)
@@ -25,6 +29,8 @@ const AppDataContextProvider = ({ children }: AppDataContextProviderProps) => {
     const [userData, setUserData] = useState<UserDataType[]>([])
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
     const [jobsData, setJobsData] = useState<Job[]>([])
+    const [showModal, setShowModal] = useState(false)
+    const [jobBeingEdited, setJobBeingEdited] = useState<Job | null>(null)
 
     useEffect(() => {
         const storedUserData = localStorage.getItem('userData')
@@ -53,7 +59,11 @@ const AppDataContextProvider = ({ children }: AppDataContextProviderProps) => {
                 isUserLoggedIn,
                 setIsUserLoggedIn,
                 jobsData,
-                setJobsData 
+                setJobsData,
+                showModal,
+                setShowModal,
+                jobBeingEdited,
+                setJobBeingEdited 
             }}
         >
             {children}

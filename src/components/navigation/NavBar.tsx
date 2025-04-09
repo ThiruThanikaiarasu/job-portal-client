@@ -6,10 +6,12 @@ import MobileMenu from './MobileMenu'
 import HamburgerMenu from '../../svg/HamburgerMenu/HamburgerMenu'
 import CloseMenu from '../../svg/CloseMenu.tsx/CloseMenu'
 import JobPostModal from '../JobPostModal/JobPostModal'
+import useAppDataContext from '../../hooks/useAppDataContext'
 
 const NavBar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const [showModal, setShowModal] = useState(false)
+    // const [showModal, setShowModal] = useState(false)
+    const { showModal, setShowModal } = useAppDataContext()
     
     const navLinks = [
         { id: 1, title: 'Home', path: '/' },
@@ -22,11 +24,6 @@ const NavBar = () => {
     const openCreateJobModal = () => {
         setShowModal(true)
     }
-
-    
-      
-
-
 
     return (
         <>
@@ -65,7 +62,7 @@ const NavBar = () => {
     
             <MobileMenu navLinks={navLinks} isOpen={mobileMenuOpen} />
 
-            <JobPostModal showModal={showModal} setShowModal={setShowModal}/>
+            <JobPostModal />
         </>
     )
 }
