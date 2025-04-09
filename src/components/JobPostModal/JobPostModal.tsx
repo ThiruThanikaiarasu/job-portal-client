@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { jobTypes, locations } from "../../types/jobForm"
 import jobService from "../../services/jobService"
-import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { AxiosError } from "axios"
 import useAppDataContext from "../../hooks/useAppDataContext"
@@ -13,7 +12,6 @@ const JobPostModal = () => {
     const { showModal, setShowModal, jobBeingEdited, setJobsData } = useAppDataContext()
     if(!showModal) return null 
 
-    const navigate = useNavigate()
     const [originalJobData, setOriginalJobData] = useState<Job | null>(null)
 
     const {
@@ -22,7 +20,6 @@ const JobPostModal = () => {
         formState: { errors },
         reset,
         getValues,
-        watch
     } = useForm<Job>({
         defaultValues: {
             title: '',
@@ -36,8 +33,6 @@ const JobPostModal = () => {
         }
     })
     
-    const formValues = watch()
-
     useEffect(() => {
         if (jobBeingEdited) {
             const formattedJobData = {

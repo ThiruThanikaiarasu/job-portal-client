@@ -11,7 +11,7 @@ import useAppDataContext from '../../hooks/useAppDataContext'
 const NavBar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     // const [showModal, setShowModal] = useState(false)
-    const { showModal, setShowModal } = useAppDataContext()
+    const { setShowModal } = useAppDataContext()
     
     const navLinks = [
         { id: 1, title: 'Home', path: '/' },
