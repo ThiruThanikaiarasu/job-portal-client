@@ -21,7 +21,6 @@ const LoginPage = () => {
         setIsSubmitting(true)
         authService.login(data)
             .then((response) => {
-                console.log(response)
                 if (response.status === 200) {
                     const user = response.data.data 
                     

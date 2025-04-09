@@ -50,7 +50,6 @@ const JobPostModal = () => {
                 try {
                 const parsed = JSON.parse(storedData)
                 reset(parsed)
-                console.log('parsed:', parsed)
                 } catch (e) {
                 console.error('Failed to parse JSON:', e)
                 }
@@ -67,7 +66,6 @@ const JobPostModal = () => {
     }
 
     const onSaveDraft = (data: Job) => {
-        console.log('Draft saved:', data)
         localStorage.setItem('jobDraft', JSON.stringify(data))
         alert('Draft saved successfully!')
         closeModal()
@@ -146,7 +144,6 @@ const JobPostModal = () => {
         localStorage.removeItem('jobDraft')
         jobService.createJob(data)
             .then((response) => {
-                console.log(response)
                 if(response.status == 201) {
                     const newJob = response.data.data 
 

@@ -14,7 +14,6 @@ const jobService = {
     },
 
     updateJob: async (jobId: string, updatedData: Partial<Job>) => {
-        console.log(updatedData)
         const response = await axiosInstance.put(`/jobs/${jobId}`, updatedData)
         return response
     },

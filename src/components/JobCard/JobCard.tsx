@@ -68,7 +68,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
+        <div className="bg-white rounded-lg shadow-md p-6 h-[355px] flex flex-col">
             <div className="flex justify-between items-center mb-4">
                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
                     <img 
@@ -125,7 +125,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
                 </div>
             </div>
             
-            <ul className="list-disc pl-5 mb-6 text-sm text-gray-700 flex-grow">
+            <ul className="list-disc pl-5 mb-6 text-sm text-gray-700 flex-grow overflow-hidden line-clamp-5">
                 {job.description}
             </ul>
             
