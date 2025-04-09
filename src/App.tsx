@@ -1,14 +1,17 @@
 import { BrowserRouter as Router } from "react-router-dom"
 import AppRoutes from "./routes/AppRoutes"
 import { Toaster } from "sonner"
+import { AppDataContextProvider } from "./context/AppDataContext"
 
 const App = () => {    
 
     return (
-        <Router>
-            <AppRoutes />
-            <Toaster richColors position="top-right"/>
-        </Router>
+        <AppDataContextProvider>
+            <Router>
+                <AppRoutes />
+                <Toaster richColors position="top-right"/>
+            </Router>
+        </AppDataContextProvider>
     )
 }
 

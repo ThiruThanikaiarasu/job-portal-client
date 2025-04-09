@@ -24,6 +24,11 @@ const SignupPage = () => {
         authService.signup(data)
             .then((response) => {
                 if (response.status === 201) {
+                    const user = response.data.data 
+                    
+                    localStorage.setItem('userData', JSON.stringify([user]))
+                    localStorage.setItem('isUserLoggedIn', 'true')
+                    
                     navigate('/')
                 }
             })

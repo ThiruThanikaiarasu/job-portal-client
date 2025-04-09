@@ -23,6 +23,11 @@ const LoginPage = () => {
             .then((response) => {
                 console.log(response)
                 if (response.status === 200) {
+                    const user = response.data.data 
+                    
+                    localStorage.setItem('userData', JSON.stringify([user]))
+                    localStorage.setItem('isUserLoggedIn', 'true')
+                    
                     navigate('/')
                 }
             })
