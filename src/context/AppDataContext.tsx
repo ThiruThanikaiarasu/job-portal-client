@@ -42,7 +42,7 @@ const AppDataContextProvider = ({ children }: AppDataContextProviderProps) => {
     const [searchQuery, setSearchQuery] = useState<string>("")
     const [location, setLocation] = useState<string>("")
     const [jobType, setJobType] = useState<string>("")
-    const [salaryRange, setSalaryRange] = useState<[number, number]>([50000, 100000])
+    const [salaryRange, setSalaryRange] = useState<[number, number]>([20000, 70000])
 
     useEffect(() => {
         const storedUserData = localStorage.getItem('userData')

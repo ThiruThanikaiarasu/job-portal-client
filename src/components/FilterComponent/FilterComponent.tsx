@@ -65,7 +65,7 @@ export const FilterComponent = () => {
         setSearchQuery("")
         setLocation("")
         setJobType("")
-        setSalaryRange([50000, 100000])
+        setSalaryRange([20000, 70000])
     }
 
     const applyFilters = () => {      

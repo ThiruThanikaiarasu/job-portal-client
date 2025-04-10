@@ -23,7 +23,7 @@ const jobService = {
         return response
     },
 
-    getAllJobs: async (searchQuery = '', location = '', jobType = '', minSalary = 50000, maxSalary = 100000) => {
+    getAllJobs: async (searchQuery = '', location = '', jobType = '', minSalary = 20000, maxSalary = 70000) => {
         const queryParams = new URLSearchParams({
             searchQuery,
             location,
