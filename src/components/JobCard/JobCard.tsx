@@ -7,7 +7,6 @@ import Company from '../../svg/Company/Company'
 import Dollar from '../../svg/Dollar/Dollar'
 import ThreeDot from '../../svg/ThreeDot/ThreeDot'
 
-import logo from '../../../public/amazon-logo.png'
 import useAppDataContext from '../../hooks/useAppDataContext'
 import jobService from '../../services/jobService'
 import { toast } from 'sonner'
@@ -17,6 +16,8 @@ interface JobCardProps {
 }
 
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
+
+    console.log(`../../../public/${job.title.toLowerCase()}.png`)
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false)
@@ -72,7 +73,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             <div className="flex justify-between items-center mb-4">
                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
                     <img 
-                        src={logo} 
+                        src={`/${job.companyName.toLowerCase()}.png`}
                         alt={`${job.companyName} logo`} 
                         className="w-8 h-8 object-contain"
                     />
