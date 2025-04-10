@@ -6,6 +6,7 @@ import jobService from "../../services/jobService"
 import { toast } from "sonner"
 import { FilterValues } from "../../types/job"
 import useDebounce from "../../hooks/useDebounce"
+import SalaryRangeSelector from "./SalaryRangeSelector"
 
 export const FilterComponent = () => {
 
@@ -65,7 +66,7 @@ export const FilterComponent = () => {
         setSearchQuery("")
         setLocation("")
         setJobType("")
-        setSalaryRange([20000, 70000])
+        setSalaryRange([10000, 70000])
     }
 
     const applyFilters = () => {      
@@ -93,23 +94,23 @@ export const FilterComponent = () => {
         )
           .then((response) => {
             if(response.status === 200) {
-              setJobsData(response.data.data);
+              setJobsData(response.data.data)
             }
           })
           .catch((error: any) => {
-            const status = error.response?.status;
-            const message = error.response?.data?.message ?? 'An error occurred';
+            const status = error.response?.status
+            const message = error.response?.data?.message ?? 'An error occurred'
             
             if (status === 500) {
-              toast.error('Server error, please try again later');
+              toast.error('Server error, please try again later')
             } else if (status) {
-              toast.error(`Error ${status}: ${message}`);
+              toast.error(`Error ${status}: ${message}`)
             } else if (error.request) {
-              toast.error('Network error. Please check your connection and try again.');
+              toast.error('Network error. Please check your connection and try again.')
             } else {
-              toast.error('Unexpected error occurred. Please try again later.');
+              toast.error('Unexpected error occurred. Please try again later.')
             }
-          });
+          })
     }, [debouncedFilterValues])
 
     return (
@@ -159,37 +160,29 @@ export const FilterComponent = () => {
                     </div>
                 
                     <div className="w-80">
-                        <div className="border border-gray-300 rounded-md px-4 py-2">
-                        <div className="flex justify-between mb-1">
-                            <span className="text-sm text-gray-500">Salary Per Month</span>
-                            <span className="text-sm font-medium">
-                            ₹{(salaryRange[0]/1000).toFixed(0)}k - ₹{(salaryRange[1]/1000).toFixed(0)}k
-                            </span>
-                        </div>
-                        <div className="relative h-2 mt-2">
-                            <input
-                            id="minSalary"
-                            type="range"
-                            min="10000"
-                            max="200000"
-                            step="5000"
-                            value={salaryRange[0]}
-                            onChange={handleSalaryChange}
-                            className="absolute w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                            />
-                            <input
-                            id="maxSalary"
-                            type="range"
-                            min="10000"
-                            max="200000"
-                            step="5000"
-                            value={salaryRange[1]}
-                            onChange={handleSalaryChange}
-                            className="absolute w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                            />
-                        </div>
-                        </div>
-                    </div>
+      <div className="border border-gray-300 rounded-md px-4 py-2">
+        <div className="flex justify-between mb-1">
+          <span className="text-sm text-gray-500">Salary Per Month</span>
+          <span className="text-sm font-medium">
+            ₹{(salaryRange[0] / 1000).toFixed(0)}k - ₹{(salaryRange[1] / 1000).toFixed(0)}k
+          </span>
+        </div>
+
+        {/* Replaced input sliders with DualRangeSlider */}
+        <div className="mt-2">
+          <SalaryRangeSelector
+            value={salaryRange}
+            onValueChange={setSalaryRange}
+            min={10000}
+            max={200000}
+            step={5000}
+            // label={() => <>₹</>}
+            // labelPosition="static"
+            // lableContenPos="right"
+          />
+        </div>
+      </div>
+    </div>
                 </div>
                 
                 <div className={`${isMobileView ? "flex" : "hidden"} items-center justify-between gap-2`}>
@@ -313,3 +306,4 @@ export const FilterComponent = () => {
 }
 
 export default FilterComponent
+

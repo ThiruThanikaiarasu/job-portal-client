@@ -125,7 +125,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
                 </div>
             </div>
             
-            <ul className="list-disc pl-5 mb-6 text-sm text-gray-700 flex-grow overflow-hidden line-clamp-5">
+            <ul className="list-disc mb-6 text-sm text-gray-700 flex-grow overflow-hidden line-clamp-5">
                 {job.description}
             </ul>
             
