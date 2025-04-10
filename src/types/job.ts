@@ -11,4 +11,13 @@ export interface Job {
     createdAt?: Date
     updatedAt?: Date
     __v?: number
-  }
+}
+
+export interface FilterValues {
+    searchQuery: string;
+    location: string;
+    jobType: string;
+    salaryMin: number;
+    salaryMax: number;
+    isFilterOpen: boolean;
+}  

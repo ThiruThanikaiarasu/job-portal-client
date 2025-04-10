@@ -17,6 +17,14 @@ type AppDataContextType = {
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
     jobBeingEdited: Job | null
     setJobBeingEdited: React.Dispatch<React.SetStateAction<Job | null>>
+    searchQuery: string
+    setSearchQuery: React.Dispatch<React.SetStateAction<string>>
+    location: string
+    setLocation: React.Dispatch<React.SetStateAction<string>>
+    jobType: string
+    setJobType: React.Dispatch<React.SetStateAction<string>>
+    salaryRange: [number, number]
+    setSalaryRange: React.Dispatch<React.SetStateAction<[number, number]>>
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined)
@@ -31,6 +39,10 @@ const AppDataContextProvider = ({ children }: AppDataContextProviderProps) => {
     const [jobsData, setJobsData] = useState<Job[]>([])
     const [showModal, setShowModal] = useState(false)
     const [jobBeingEdited, setJobBeingEdited] = useState<Job | null>(null)
+    const [searchQuery, setSearchQuery] = useState<string>("")
+    const [location, setLocation] = useState<string>("")
+    const [jobType, setJobType] = useState<string>("")
+    const [salaryRange, setSalaryRange] = useState<[number, number]>([50000, 10000])
 
     useEffect(() => {
         const storedUserData = localStorage.getItem('userData')
@@ -63,7 +75,15 @@ const AppDataContextProvider = ({ children }: AppDataContextProviderProps) => {
                 showModal,
                 setShowModal,
                 jobBeingEdited,
-                setJobBeingEdited 
+                setJobBeingEdited,
+                searchQuery,
+                setSearchQuery,
+                location,
+                setLocation,
+                jobType,
+                setJobType,
+                salaryRange,
+                setSalaryRange 
             }}
         >
             {children}

@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import JobBoard from "../../components/JobBoard/JobBoard"
 import { useNavigate } from "react-router-dom"
+import FilterComponent from "../../components/FilterComponent/FilterComponent"
 
 const HomePage = () => {
 
@@ -15,6 +16,7 @@ const HomePage = () => {
     }, [])
     return (
         <main>
+            <FilterComponent />
             <JobBoard  />
         </main>
     )

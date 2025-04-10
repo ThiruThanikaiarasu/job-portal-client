@@ -4,7 +4,7 @@ import axiosInstance from '../utils/axiosInstance'
 interface JobResponse {
     message: string
     error: string | null
-    data: any // You can replace this with your IJob interface if defined
+    data: any 
 }
 
 const jobService = {
@@ -23,8 +23,16 @@ const jobService = {
         return response
     },
 
-    getAllJobs: async () => {
-        const response = await axiosInstance.get('/jobs')
+    getAllJobs: async (searchQuery = '', location = '', jobType = '', minSalary = 50000, maxSalary = 80000) => {
+        const queryParams = new URLSearchParams({
+            searchQuery,
+            location,
+            jobType,
+            minSalary: minSalary.toString(),
+            maxSalary: maxSalary.toString(),
+        }).toString()
+    
+        const response = await axiosInstance.get(`/jobs?${queryParams}`)
         return response
     }
 }
