@@ -39,16 +39,21 @@ const JobBoard: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             {isLoading ? (
                 <LoadingComponent />
-            ) : (
+            ) : jobsData.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {jobsData.length > 0 &&  jobsData.map((job) => (
+                    {jobsData.map((job) => (
                         <div key={job._id}>
                             <JobCard job={job} />
                         </div>
                     ))}
                 </div>
+            ) : (
+                <p className="w-full text-center text-gray-600 text-lg">
+                    No jobs matched your current search. Try adjusting your filters or keywords to see more results.
+                </p>
             )}
-        </div>
+    </div>
+    
     )
 }
 
